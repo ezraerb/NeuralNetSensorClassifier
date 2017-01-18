@@ -1,0 +1,98 @@
+These programs classify data from a gas sensor array. The array was used to
+collect time series of sensor data under various conditions. The goal is to 
+classify each time series to the correct set of conditions. A classic gradient
+descent neural network was used to do the classification. The network was
+explictly implemented instead of using a package to learn the algorithm. 
+
+The program input is two files, one of sensor data tine series and one of the 
+category each belongs in. The data came from a public data set available here:
+https://archive.ics.uci.edu/ml/datasets/Gas+sensors+for+home+activity+monitoring
+
+The time series are first preprocessed by removing background data and then
+normalizing to the range 0..1 based on the lowest and higest values seen over
+all samples. The samples are then split by category and then further split into
+three groups: training, validation, and test. The split by category ensure that
+no group has a bias toward a particular category, which can affect the accuracy
+of the network.
+
+The network is trained time series by time series, using the classic early
+stopping algorithm. The algorighm has a patience period of 3 epochs, meaning it
+stops after the epocs of increasing validation error.
+
+The performance of the final network is tested on the remaining samples to 
+produce a confusion matrix. The precision, recall, and balance F statistic are
+then calculated for each category, and overall, based on the matrix.
+
+Initial results showed that certain sensors produced very noisy data that was
+confusing the network. Two data plot utilities, SamplePlotter and
+CrossSampleSensorPlotter were written to visualize the output of various
+sensors. With these results, sensors were exluded from the netword to 
+potentially improve classification results.
+
+Results show excluding noisy sensors did improve classification, but only to a
+point. Excluding more than one-third of sensors led to worse classification and
+significantly increased training time.
+
+Sample results:
+All sensors:
+                           predicted
+      actual      banana  background        wine
+      banana         5.0         2.0         2.0
+  background         2.0         5.0         0.0
+        wine         3.0         1.0         6.0
+Category: banana Precision: 0.5 Recall: 0.555555555556 Balanced F Statistic: 0.5
+26315789474
+Category: background Precision: 0.625 Recall: 0.714285714286 Balanced F Statisti
+c: 0.666666666667
+Category: wine Precision: 0.75 Recall: 0.6 Balanced F Statistic: 0.666666666667
+Overall: Precision: 0.625 Recall: 0.62328042328 Balanced F Statistic: 0.61988304
+0936
+
+Ignore last two:
+                           predicted
+      actual      banana  background        wine
+      banana         4.0         4.0         1.0
+  background         1.0         5.0         1.0
+        wine         1.0         1.0         8.0
+Category: banana Precision: 0.666666666667 Recall: 0.444444444444 Balanced F Sta
+tistic: 0.533333333333
+Category: background Precision: 0.5 Recall: 0.714285714286 Balanced F Statistic:
+ 0.588235294118
+Category: wine Precision: 0.8 Recall: 0.8 Balanced F Statistic: 0.8
+Overall: Precision: 0.655555555556 Recall: 0.65291005291 Balanced F Statistic: 0
+.640522875817
+
+Ignore last three:
+                           predicted
+      actual      banana  background        wine
+      banana         5.0         3.0         1.0
+  background         0.0         7.0         0.0
+        wine         2.0         1.0         7.0
+Category: banana Precision: 0.714285714286 Recall: 0.555555555556 Balanced F Sta
+tistic: 0.625
+Category: background Precision: 0.636363636364 Recall: 1.0 Balanced F Statistic:
+ 0.777777777778
+Category: wine Precision: 0.875 Recall: 0.7 Balanced F Statistic: 0.777777777778
+
+Overall: Precision: 0.741883116883 Recall: 0.751851851852 Balanced F Statistic:
+0.726851851852
+
+The code was written on Python 2.7. It requires NumPy and matplotlib.
+
+  Copyright (C) 2016   Ezra Erb
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License version 3 as published
+  by the Free Software Foundation.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+  I'd appreciate a note if you find this program useful or make
+  updates. Please contact me through LinkedIn or github (my profile also has
+  a link to the code depository)
